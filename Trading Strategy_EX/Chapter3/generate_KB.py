@@ -54,4 +54,4 @@ ax.legend() # 設置legend才會有label跑出來
 plt.savefig('test2.png')   
 plt.show()
 
-
+# 可以參考matplotlib gallery參考圖面
