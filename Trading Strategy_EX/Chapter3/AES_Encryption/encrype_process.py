@@ -10,6 +10,7 @@ def input_new_encrype(fuc_name,key_path,result_path):
     print(f'Starting input ......{fuc_name}')
     user_id = input('Please input gmail address:')
     password = input('Please input password:')
+    print(result_path)
     result_file_path = (result_path+'encrype.config').replace('\n','')
     key = get_key(key_path,result_path)
     user_encrype = aes_encrypt(user_id, key)
@@ -56,4 +57,3 @@ def check_encrype(eng_name,key_path,result_path):
         else:
             user_id,password = input_new_encrype(eng_name,key_path,result_path)
     return user_id,password
-
