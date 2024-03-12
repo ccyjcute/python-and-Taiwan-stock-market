@@ -8,7 +8,7 @@ import datetime
 import traceback
 try:
     #讀取高配息清單
-    data = pd.read_excel('D:/Trading/dividend_list.xlsx')
+    data = pd.read_excel('dividend_list.xlsx')
     #獲取代號
     target_stock = data['代號'].tolist()
     #獲取今日日期
@@ -24,14 +24,14 @@ try:
         #郵件內容為空
         body = ''
         #寄信
-        uf.send_mail(mail_list, subject, body, 'text',None, None)
+        uf.send_mail(mail_list, subject, body, 'text', None, None)
         exit()
 
     #獲取過去一年的日期，我們以365天估算
     date_start = today + datetime.timedelta(days =-365)
     #轉為str格式等一下準備傳入yfinance的history獲取歷史股價
     date_start = date_start.strftime('%Y-%m-%d')
-    #獲取T+1日，因為yfinance的end日期是到T-1
+    #獲取T+1日，因為yfinance的end日期是到T-1(舉例我想要2/2的資料，必須傳2/3作為end)
     date_end = today + datetime.timedelta(days =1)
     #轉為str格式等一下準備傳入yfinance的history獲取歷史股價
     date_end = date_end.strftime('%Y-%m-%d')
@@ -59,16 +59,16 @@ try:
             #儲存最近的收盤價
             now_price_store.append(now_price)
             #print出來觀賞
-            print(f'Stock: {target} | high 70%: {highest*0.7} | now: {now_price} | Status : Get!')
+            print(f'Stock: {target} | highist: {highest} | now: {now_price} | Status : Get!')
     #讀取所有股票清單
-    all_stock_list = pd.read_excel('D:/Trading/stock_list.xlsx')
+    all_stock_list = pd.read_excel('stock_list.xlsx')
     #創建空list備用
     stock_name_store = []
     #loop符合我們目標的股票
     for st in target_store:
         #dataframe的篩選，篩選出目標股票
         select_data = all_stock_list[(all_stock_list[u'代號']==st)]
-        #取得後取股票平稱後轉values再取裡面的元素
+        #取得後取股票名稱後轉values再取裡面的元素
         target = select_data['股票名稱'].values[0]
         #append進list
         stock_name_store.append(target)
@@ -94,11 +94,12 @@ try:
                 </body>
                 </html>'''
     #寄信名單
-    mail_list = ['a*****@gmail.com','0*****@gm.scu.edu.tw']
+    mail_list = ['***@gmail.com']
     #標題我們加上日期，淺顯易懂
     subject = f'{today}  小幫手高配息低股價-每日價格比對'
     #寄信
-    uf.send_mail(mail_list, subject, body,'html', None, None)
+    uf.send_mail(mail_list, subject, body, 'html', None, None)
+    print("good")
 except SystemExit:
     print('Its OK')
 except:
