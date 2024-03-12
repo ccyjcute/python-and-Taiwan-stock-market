@@ -1,7 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
-
+import re
+import time
 """
 設計上是先在新聞列表中取得每一篇新聞的連結，再去每一篇新聞獲取標題以及日期資訊
 其實新聞列表就已經具有標題以及連結這些元素，但問題是他的時間是例如1小時前、50分鐘前、三天前
@@ -30,13 +31,15 @@ def get_yahoo_news2(stock: str):
 
     date_store, title_store = [], [] # 開始進行獲取日期，標題我也在這裡做，當然如果你要再上一個步驟就獲取標題也可以
     for new in all_news_link: # loop剛剛獲得的每一篇新聞網址
+        time.sleep(1)
         each_data = requests.get(f"{new}", headers=headers)
         each_soup = BeautifulSoup(each_data.text, "html.parser")
 
         title = each_soup.find("h1", {"data-test-locator": "headline"}).text # find獲取title
         news_time = each_soup.find("div", {"class": "caas-attr-time-style"}).text # find獲取時間
         # 整理時間格式，只想要前面的年月日資訊，中間有空白剛好可以利用split切割空白，取第一個元素
-        news_time = news_time.split(" ")[0]
+        news_time = re.search(r'(\d{4}年\d{1,2}月\d{1,2}日)', news_time)
+        news_time = news_time.group(1)
         # 這裡看個人要不要做，我不喜歡例如2021年9月27日這樣的格式，因此我用replace轉換成2021/9/27
         news_time = news_time.replace("年", "/")
         news_time = news_time.replace("月", "/")
@@ -44,10 +47,12 @@ def get_yahoo_news2(stock: str):
         # append整理資料
         title_store.append(title)
         date_store.append(news_time)
+
     # 整理成DataFrame
     result = pd.DataFrame()
     result["title"] = title_store
     result["url"] = all_news_link
     result["date"] = date_store
+    # result.to_csv("test.csv", encoding='big5', index=False)
     return result
 print(get_yahoo_news2("2330"))
