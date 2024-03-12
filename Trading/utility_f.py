@@ -12,13 +12,13 @@ import pandas as pd
 import datetime
 from bs4 import BeautifulSoup
 
-#是否開盤用函數，返回字串Y、N，Y代表有開盤，N反之
+# 是否開盤用函數，返回字串Y、N。Y代表有開盤，N反之
 '''
 target_date = 傳入datetime格式日期，為需要判定是否開盤的日期
 '''
 def is_open(target_date:datetime.date):
     #讀取剛剛的休市日期檔案
-    hd = pd.read_excel(r"D:/Trading/holiday.xlsx")
+    hd = pd.read_excel("./holiday.xlsx")
     #轉換為list備用
     hd_date = pd.to_datetime(hd['日期']).tolist()
     #將日期進行格式化
@@ -44,7 +44,7 @@ r_date = 字串格式日期，為需要查詢三大法人買賣超日報的目�
 '''
 def twse_data(r_date:str):
     #一樣我們對api進行請求
-    data = requests.get(f'https://www.twse.com.tw/fund/T86?response=json&date={r_date}&selectType=ALLBUT0999&_=1614316365630')
+    data = requests.get(f'https://www.twse.com.tw/rwd/zh/fund/T86?date={r_date}&selectType=ALL&response=json&_=1710163649133')
     #使用json套件將他loads成json格式之後處理
     data_json = json.loads(data.text)
     #我們知道了欄位是fields，資料是data
@@ -62,8 +62,8 @@ file_name = 列表，希望收件者看到的檔名
 '''
 def send_mail(mail_list:list, subject:str, body:str, mode :str , file_path:list, file_name:list):
     #決定金鑰跟config檔位置
-    key_path = 'D:/key/'
-    config_path = 'D:/config/'
+    key_path = '/mnt/d/key/'
+    config_path = '/mnt/d/config/'
     #引用加解密的主要程式check_encrype
     user_id, password = check_encrype('gmail',key_path,config_path)
     #創建一個MIMEMultipart()類

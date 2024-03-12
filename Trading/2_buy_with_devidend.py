@@ -7,11 +7,10 @@ import datetime
 import traceback
 import utility_f as uf
 try:
-    #讀取台股列表
-    stock_list = pd.read_excel('D:\Trading\stock_list.xlsx')
-    #獲取所有的股票代號
-    all_stock = stock_list['代號'].values
-
+    
+    stock_list = pd.read_excel('./stock_list.xlsx') # 讀取台股列表
+    all_stock = stock_list['代號'].values # 獲取所有的股票代號(.value是將pandas轉成numpy)
+    print(all_stock)
     #儲存每支股票的殖利率
     dividend_store = []
     stock_store = []
